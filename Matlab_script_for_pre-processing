@@ -1,0 +1,38 @@
+S2D=ALLEEG.data;
+size(S2D)
+
+
+
+%%%%% Butterworth 4th order high pass filter%%%%%%%%%%%%%%%%%
+fs=1/1000/2;   %1- cutoff frequence, 1000-sampling rate withwhichthe data was collected, 2- just always 2 by the formula;
+[b, a] = butter(4, fs, 'high');
+data_filtered=filter(b,a, S2D);
+size(data_filtered);
+
+
+%%LowPass 8th order Chebyshev Type 1 filter%%%%
+Rp=1;
+%Wp=25/1000/2;
+Wp=0.05;%from Dr Nielsen email; 
+[b,a] = cheby1(8,Rp,Wp,'low');
+data_filtered_ch=filter(b,a, data_filtered);
+size(data_filtered_ch);
+
+%%%Downsampling by 16%%
+data_transposed=transpose(data_filtered_ch);
+size(data_transposed)
+data_filtered_downs=downsample(data_transposed,16);
+data_filtered_downs=transpose(data_filtered_downs);
+
+
+ALLEEG.data=data_filtered_downs;
+
+%save('preprocessed.mat','ALLEEG')
+
+%perform ICA in EEGLAB (I picked runica, read here https://sccn.ucsd.edu/wiki/Chapter_09:_Decomposing_Data_Using_ICA )
+
+%perform re-referencing in EEGLAB or by calling pop_reref.m, drop E257, read here https://sccn.ucsd.edu/wiki/I.4:_Preprocessing_Tools
+
+%extracting epochs in EEGLAB of by calling pop_epoch.m
+
+ERROR!
